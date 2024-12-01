@@ -2,7 +2,7 @@
 using namespace std;
 
 //Функция сортировки методом вставки
-void insertionSort(int arr[], int n, bool ascending) {   // параметр, определяющий порядок сортировки
+void inclusionSort(int arr[], int n, bool ascending) {   // параметр, определяющий порядок сортировки
 	for (int i = 1; i < n; i++) {
 		int key = arr[i];
 		int j = i - 1;
@@ -39,12 +39,12 @@ int main() {
 	cin >> order;
 
 	if (order == 1) {
-		insertionSort(arr, n, true);  // Сортировка по возрастанию
+		inclusionSort(arr, n, true);  // Сортировка по возрастанию
 		cout << "Отсортированный массив: ";
 
 	}
 	else if (order == 2) {
-		insertionSort(arr, n, false);  // Сортировка по убыванию
+		inclusionSort(arr, n, false);  // Сортировка по убыванию
 		cout << "Отсортированный массив: ";
 	}
 	else {
