@@ -1,70 +1,66 @@
 #include <iostream>
 #include <vector>
-#include <limits>
-
 using namespace std;
 
-// Функция для нахождения максимального или минимального элемента среди упорядоченных строк
-int findMinMax(const vector<vector<int>>& matrix, bool findMax, bool isSorted) {
-    int minMaxVal = findMax ? numeric_limits<int>::min() : numeric_limits<int>::max();
-
-    // Если строки отсортированы, пропускаем проверку на сортировку
+// Функция для вывода матрицы
+void printMatrix(const vector<vector<int>>& matrix) {
     for (const auto& row : matrix) {
-        // Если строки отсортированы, сразу ищем максимум или минимум
-        if (isSorted) {
-            int rowMinMaxVal = findMax ? row.back() : row.front();
-            minMaxVal = findMax ? max(minMaxVal, rowMinMaxVal) : min(minMaxVal, rowMinMaxVal);
+        for (int element : row) {
+            cout << element << " ";
         }
-        else {
-            // Если строки не отсортированы, проверяем сортировку
-            bool isSortedRow = true;
-            for (size_t i = 1; i < row.size(); ++i) {
-                if (row[i] < row[i - 1]) {
-                    isSortedRow = false;
-                    break;
-                }
-            }
+        cout << endl;
+    }
+}
 
-            if (isSortedRow) {
-                int rowMinMaxVal = findMax ? row.back() : row.front();
-                minMaxVal = findMax ? max(minMaxVal, rowMinMaxVal) : min(minMaxVal, rowMinMaxVal);
-            }
+// Функция циклической перестановки квадратов
+void rotateSquares(vector<vector<int>>& matrix, int n) {
+    int half = n / 2; // Размер подматрицы (половина матрицы)
+    
+    for (int i = 0; i < half; ++i) {
+        for (int j = 0; j < half; ++j) {
+            // Сохранение значений квадратов
+            int topLeft = matrix[i][j];
+            int topRight = matrix[i][j + half];
+            int bottomRight = matrix[i + half][j + half];
+            int bottomLeft = matrix[i + half][j];
+
+            // Циклический сдвиг
+            matrix[i][j + half] = topLeft;            // Верхний левый → Верхний правый
+            matrix[i + half][j + half] = topRight;    // Верхний правый → Нижний правый
+            matrix[i + half][j] = bottomRight;        // Нижний правый → Нижний левый
+            matrix[i][j] = bottomLeft;                // Нижний левый → Верхний левый
         }
     }
-
-    return minMaxVal;
 }
 
 int main() {
-    setlocale(LC_ALL, "RU");
-    int n, m;
-    cout << "Введите количество строк (n): ";
-    cin >> n;
-    cout << "Введите количество столбцов (m): ";
-    cin >> m;
+    int n;
 
-    vector<vector<int>> matrix(n, vector<int>(m));
+    cout << "Введите размер матрицы (четное число): ";
+    cin >> n;
+
+    if (n % 2 != 0) {
+        cout << "Размер матрицы должен быть четным!" << endl;
+        return 1;
+    }
+
+    // Инициализация матрицы
+    vector<vector<int>> matrix(n, vector<int>(n));
     cout << "Введите элементы матрицы:" << endl;
     for (int i = 0; i < n; ++i) {
-        for (int j = 0; j < m; ++j) {
+        for (int j = 0; j < n; ++j) {
             cin >> matrix[i][j];
         }
     }
 
-    // Предполагаем, что строки уже отсортированы, если это так
-    bool isSorted = true;
-    for (const auto& row : matrix) {
-        for (size_t i = 1; i < row.size(); ++i) {
-            if (row[i] < row[i - 1]) {
-                isSorted = false;
-                break;
-            }
-        }
-        if (!isSorted) break;
-    }
+    cout << "Исходная матрица:" << endl;
+    printMatrix(matrix);
 
-    cout << "Максимальный элемент среди упорядоченных строк: " << findMinMax(matrix, true, isSorted) << endl;
-    cout << "Минимальный элемент среди упорядоченных строк: " << findMinMax(matrix, false, isSorted) << endl;
+    // Циклическая перестановка
+    rotateSquares(matrix, n);
+
+    cout << "Матрица после циклической перестановки:" << endl;
+    printMatrix(matrix);
 
     return 0;
 }
